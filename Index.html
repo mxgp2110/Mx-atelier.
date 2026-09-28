@@ -1,0 +1,1857 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>MX Atelier</title>
+
+<!-- Configuration PWA & Thème -->
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MX Atelier">
+<meta name="theme-color" content="#050b14">
+
+<style>
+:root {
+--bg-dark: #050b14;
+--card-bg: #0d1b2a;
+--card-inner: #132238;
+--cyan-accent: #00e5ff;
+--neon-blue: #00b4d8;
+--text-color: #ffffff;
+--text-muted: #8d99ae;
+--border-color: #1f3a5f;
+--danger-red: #ff3366;
+--success-green: #06d6a0;
+--yellow-gold: #ffd166;
+--brand-orange: #ff5722;
+}
+
+body.light-mode {
+--bg-dark: #f4f6f9;
+--card-bg: #ffffff;
+--card-inner: #f0f2f5;
+--text-color: #333333;
+--text-muted: #666666;
+--border-color: #d1d5db;
+}
+
+* {
+box-sizing: border-box;
+margin: 0;
+padding: 0;
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+-webkit-tap-highlight-color: transparent;
+}
+
+body {
+background: var(--bg-dark);
+color: var(--text-color);
+min-height: 100vh;
+padding: 15px;
+padding-bottom: 100px;
+transition: background 0.3s, color 0.3s;
+}
+
+#login-overlay {
+position: fixed;
+top: 0; left: 0;
+width: 100%; height: 100%;
+background: var(--bg-dark);
+z-index: 9999;
+display: flex;
+justify-content: center;
+align-items: center;
+padding: 20px;
+}
+
+.login-card {
+background: var(--card-bg);
+border: 2px solid var(--border-color);
+border-radius: 18px;
+padding: 25px;
+width: 100%;
+max-width: 400px;
+box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+}
+
+.app-top-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 10px 0 20px 0;
+margin-bottom: 5px;
+position: relative;
+}
+
+.logo-brand {
+font-size: 1.3rem;
+font-weight: 900;
+background: linear-gradient(90deg, var(--cyan-accent), var(--brand-orange));
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+letter-spacing: 1.5px;
+text-transform: uppercase;
+}
+
+.icon-container {
+display: flex;
+gap: 15px;
+align-items: center;
+position: relative;
+}
+
+.icon-btn {
+background: none;
+border: none;
+font-size: 1.2rem;
+cursor: pointer;
+position: relative;
+padding: 5px;
+color: var(--text-color);
+}
+
+.badge {
+position: absolute;
+top: 0;
+right: 0;
+background-color: var(--danger-red);
+color: white;
+font-size: 0.65rem;
+padding: 2px 5px;
+border-radius: 50%;
+}
+
+.dropdown-menu {
+display: none;
+position: absolute;
+right: 0;
+top: 45px;
+background-color: var(--card-bg);
+border: 1px solid var(--border-color);
+box-shadow: 0 8px 25px rgba(0,0,0,0.7);
+border-radius: 12px;
+width: 260px;
+z-index: 2000;
+padding: 15px;
+text-align: left;
+}
+
+.dropdown-menu.active { display: block; }
+
+.dropdown-menu h4 {
+margin: 0 0 10px 0;
+font-size: 0.9rem;
+border-bottom: 1px solid var(--border-color);
+padding-bottom: 6px;
+color: var(--yellow-gold);
+text-transform: uppercase;
+}
+
+.dropdown-menu ul { list-style: none; padding: 0; margin: 0; }
+
+.dropdown-menu li {
+padding: 9px 8px;
+font-size: 0.85rem;
+cursor: pointer;
+color: var(--text-color);
+border-radius: 6px;
+transition: background 0.2s;
+}
+
+.dropdown-menu li:hover { background: var(--card-inner); color: var(--cyan-accent); }
+
+.hero-garage-card {
+background: linear-gradient(135deg, #132238, #0d1b2a);
+border-radius: 18px;
+padding: 18px;
+margin-bottom: 15px;
+border: 1px solid var(--border-color);
+box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+display: flex;
+justify-content: space-between;
+align-items: center;
+cursor: pointer;
+transition: transform 0.2s;
+position: relative;
+overflow: hidden;
+}
+
+.hero-garage-card:hover { border-color: var(--brand-orange); transform: translateY(-2px); }
+
+.hero-garage-info h3 { font-size: 1.2rem; color: #fff; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+.hero-garage-info p { color: var(--text-muted); font-size: 0.82rem; margin-bottom: 10px; }
+.hero-garage-cta { color: var(--brand-orange); font-size: 0.8rem; font-weight: bold; text-transform: uppercase; }
+
+.hero-garage-img {
+width: 110px;
+height: 80px;
+border-radius: 10px;
+object-fit: cover;
+border: 1px solid var(--border-color);
+background: #050b14;
+}
+
+.gamification-card {
+background: linear-gradient(135deg, #132238, #0d1b2a);
+border-radius: 18px;
+padding: 16px;
+margin-bottom: 15px;
+border: 1px solid var(--border-color);
+box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+text-align: center;
+}
+
+.status-badge {
+display: inline-block;
+padding: 6px 20px;
+border-radius: 15px;
+font-weight: bold;
+font-size: 0.95rem;
+margin-top: 4px;
+color: #fff;
+}
+.bronze { background-color: #cd7f32; }
+.silver { background-color: #c0c0c0; color: #050b14; }
+.gold { background-color: #ffd700; color: #050b14; }
+
+.quick-shortcuts {
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+gap: 10px;
+margin-bottom: 18px;
+}
+
+.shortcut-card {
+background: var(--card-bg);
+border: 1px solid var(--border-color);
+border-radius: 14px;
+padding: 14px 10px;
+text-align: center;
+cursor: pointer;
+transition: all 0.2s;
+}
+
+.shortcut-card:hover { border-color: var(--cyan-accent); background: var(--card-inner); }
+.shortcut-card span { display: block; font-size: 1.3rem; margin-bottom: 4px; }
+.shortcut-card label { font-size: 0.75rem; font-weight: bold; color: var(--text-color); cursor: pointer; text-transform: uppercase; }
+
+.action-banner {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 16px 20px;
+border-radius: 14px;
+margin-bottom: 12px;
+cursor: pointer;
+font-weight: bold;
+box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+transition: transform 0.2s;
+}
+
+.action-banner:hover { transform: scale(1.01); }
+
+.banner-blue {
+background: linear-gradient(135deg, #00b4d8, #0077b6);
+color: #fff;
+border: 1px solid var(--cyan-accent);
+}
+
+.banner-light {
+background: var(--card-bg);
+color: var(--text-color);
+border: 1px solid var(--border-color);
+}
+
+.banner-content-left { display: flex; align-items: center; gap: 12px; }
+.banner-icon-box { font-size: 1.5rem; }
+.banner-title { font-size: 1rem; font-weight: 900; display: block; }
+.banner-subtitle { font-size: 0.75rem; opacity: 0.85; font-weight: normal; display: block; margin-top: 2px; }
+
+.floating-nav {
+position: fixed;
+bottom: 15px;
+left: 50%;
+transform: translateX(-50%);
+width: 95%;
+max-width: 500px;
+background: var(--card-bg);
+backdrop-filter: blur(12px);
+border: 1px solid var(--border-color);
+border-radius: 25px;
+display: flex;
+justify-content: space-around;
+padding: 6px 2px;
+z-index: 1000;
+box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+}
+
+.nav-item {
+background: transparent;
+border: none;
+color: var(--text-muted);
+display: flex;
+flex-direction: column;
+align-items: center;
+font-size: 0.55rem;
+font-weight: bold;
+cursor: pointer;
+padding: 6px 2px;
+border-radius: 16px;
+transition: all 0.2s;
+flex: 1;
+}
+
+.nav-item span { font-size: 1.05rem; margin-bottom: 2px; }
+.nav-item.active {
+background: rgba(0, 229, 255, 0.15);
+color: var(--cyan-accent);
+box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+}
+
+.main-content {
+background: var(--card-bg);
+border-radius: 16px;
+padding: 15px;
+border: 1px solid var(--border-color);
+box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+}
+
+.tab-section { display: none; }
+.tab-section.active { display: block; }
+
+h2 { font-size: 1.3rem; margin-bottom: 12px; color: var(--cyan-accent); text-transform: uppercase; }
+.form-group { margin-bottom: 12px; }
+
+label {
+display: block;
+margin-bottom: 4px;
+color: var(--yellow-gold);
+font-size: 0.8rem;
+font-weight: bold;
+text-transform: uppercase;
+}
+
+select, input {
+width: 100%;
+padding: 12px;
+background: var(--card-inner);
+border: 1px solid var(--border-color);
+border-radius: 8px;
+color: var(--text-color);
+font-size: 0.95rem;
+}
+
+select:focus, input:focus {
+border-color: var(--cyan-accent);
+outline: none;
+box-shadow: 0 0 8px rgba(0, 229, 255, 0.3);
+}
+
+optgroup { background: var(--card-bg); color: var(--yellow-gold); font-weight: bold; }
+option { background: var(--card-inner); color: var(--text-color); }
+
+.btn-action {
+background: var(--success-green);
+color: #050b14;
+border: none;
+padding: 14px;
+font-weight: 900;
+border-radius: 8px;
+width: 100%;
+font-size: 1rem;
+text-transform: uppercase;
+cursor: pointer;
+margin-top: 10px;
+box-shadow: 0 0 10px rgba(6, 214, 160, 0.3);
+text-decoration: none;
+display: inline-block;
+text-align: center;
+}
+
+.btn-danger {
+background: var(--danger-red);
+color: #fff;
+border: none;
+padding: 6px 10px;
+border-radius: 6px;
+font-size: 0.75rem;
+font-weight: bold;
+cursor: pointer;
+}
+
+.bike-card {
+background: var(--card-inner);
+border-radius: 14px;
+padding: 15px;
+margin-top: 15px;
+border-width: 2px;
+border-style: solid;
+cursor: pointer;
+box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+
+.bike-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.brand-badge { padding: 4px 10px; border-radius: 6px; font-weight: 900; font-size: 0.8rem; }
+
+.bike-photo-box {
+width: 100%;
+height: 180px;
+border-radius: 10px;
+background: #050b14;
+margin: 10px 0;
+overflow: hidden;
+display: flex;
+align-items: center;
+justify-content: center;
+border: 1px dashed var(--border-color);
+}
+
+.bike-photo-box img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Styles pour le suivi d'état des pièces */
+.parts-status-box {
+background: var(--card-bg);
+border-radius: 10px;
+padding: 12px;
+margin-top: 12px;
+border: 1px solid var(--border-color);
+}
+.parts-status-title {
+color: var(--brand-orange);
+font-size: 0.85rem;
+font-weight: 900;
+margin-bottom: 8px;
+text-transform: uppercase;
+}
+.part-item {
+margin-bottom: 8px;
+}
+.part-item:last-child {
+margin-bottom: 0;
+}
+.part-header {
+display: flex;
+justify-content: space-between;
+font-size: 0.78rem;
+font-weight: bold;
+margin-bottom: 3px;
+color: var(--text-color);
+}
+.progress-track {
+width: 100%;
+height: 6px;
+background: var(--card-inner);
+border-radius: 3px;
+overflow: hidden;
+border: 1px solid var(--border-color);
+}
+.progress-fill {
+height: 100%;
+border-radius: 3px;
+transition: width 0.3s;
+}
+
+.btn-view {
+margin-top: 12px;
+background: var(--neon-blue);
+color: #050b14;
+padding: 10px;
+border-radius: 8px;
+font-weight: bold;
+text-align: center;
+font-size: 0.85rem;
+}
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+
+.photo-upload-label {
+display: block;
+background: var(--card-inner);
+border: 2px dashed var(--cyan-accent);
+padding: 15px;
+text-align: center;
+border-radius: 8px;
+cursor: pointer;
+color: var(--yellow-gold);
+font-weight: bold;
+font-size: 0.9rem;
+}
+
+.photo-preview { width: 100%; max-height: 150px; object-fit: cover; border-radius: 8px; margin-top: 10px; display: none; }
+
+.modal-overlay {
+display: none;
+position: fixed;
+top: 0; left: 0;
+width: 100%; height: 100%;
+background: rgba(5, 11, 20, 0.9);
+padding: 15px;
+overflow-y: auto;
+z-index: 2000;
+}
+
+.modal-content {
+background: var(--card-bg);
+border: 2px solid var(--cyan-accent);
+border-radius: 14px;
+padding: 15px;
+margin-top: 20px;
+box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+}
+
+.maint-container {
+background: var(--card-inner);
+padding: 12px;
+border-radius: 10px;
+margin-bottom: 15px;
+border: 1px solid var(--border-color);
+max-height: 350px;
+overflow-y: auto;
+}
+
+.maint-cat-title {
+color: var(--yellow-gold);
+font-size: 0.85rem;
+font-weight: bold;
+margin: 10px 0 6px 0;
+text-transform: uppercase;
+border-bottom: 1px dashed var(--border-color);
+padding-bottom: 3px;
+}
+
+.maint-checkbox-label {
+display: flex;
+align-items: center;
+gap: 10px;
+background: var(--card-bg);
+padding: 8px 10px;
+border-radius: 6px;
+margin-bottom: 6px;
+font-size: 0.85rem;
+color: var(--text-color);
+cursor: pointer;
+border: 1px solid var(--border-color);
+}
+
+.maint-checkbox-label input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--cyan-accent); cursor: pointer; }
+
+.tip-category { font-size: 1.1rem; color: var(--yellow-gold); margin: 20px 0 10px 0; border-bottom: 2px solid var(--cyan-accent); padding-bottom: 5px; text-transform: uppercase; }
+.tip-item { background: var(--card-inner); border-radius: 10px; padding: 12px 15px; margin-bottom: 10px; border-left: 4px solid var(--success-green); border: 1px solid var(--border-color); }
+.tip-item h3 { font-size: 0.95rem; color: var(--text-color); margin-bottom: 4px; }
+.tip-item p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; }
+
+.mx-header-banner {
+background: var(--brand-orange);
+color: #fff;
+padding: 10px;
+border-radius: 8px;
+text-align: center;
+font-weight: 900;
+font-size: 0.95rem;
+margin-bottom: 15px;
+box-shadow: 0 4px 12px rgba(255, 87, 34, 0.4);
+}
+
+.mx-subnav { display: flex; background: var(--card-inner); border-radius: 8px; padding: 4px; margin-bottom: 15px; border: 1px solid var(--border-color); }
+.rp-tab { flex: 1; text-align: center; padding: 8px; font-size: 0.8rem; font-weight: bold; color: var(--text-muted); cursor: pointer; border-radius: 6px; transition: all 0.2s; }
+.rp-tab.active { background: var(--brand-orange); color: #fff; box-shadow: 0 0 10px rgba(255, 87, 34, 0.5); }
+
+.regions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.region-card { background: var(--card-inner); border: 2px solid var(--border-color); border-radius: 10px; padding: 12px; cursor: pointer; text-align: center; transition: all 0.2s; }
+.region-card:hover { border-color: var(--brand-orange); transform: translateY(-2px); }
+.region-card.has-tracks { border-color: var(--brand-orange); background: linear-gradient(135deg, var(--card-inner), rgba(255, 87, 34, 0.15)); }
+.region-title { font-size: 0.85rem; font-weight: bold; color: var(--text-color); margin-bottom: 4px; }
+.region-count { display: inline-block; background: var(--brand-orange); color: #fff; font-size: 0.75rem; font-weight: 900; padding: 2px 8px; border-radius: 10px; }
+
+.circuit-card { background: var(--card-inner); border-radius: 10px; padding: 12px 15px; margin-bottom: 12px; border: 1px solid var(--border-color); border-left: 4px solid var(--brand-orange); }
+.circuit-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.circuit-badge { background: rgba(255, 87, 34, 0.15); color: var(--brand-orange); border: 1px solid var(--brand-orange); padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; }
+.status-open { background: rgba(6, 214, 160, 0.2); color: var(--success-green); border: 1px solid var(--success-green); padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; }
+
+.shop-card {
+background: var(--card-inner);
+border-radius: 12px;
+padding: 15px;
+margin-bottom: 14px;
+border: 1px solid var(--border-color);
+display: flex;
+flex-direction: column;
+gap: 6px;
+}
+
+.shop-card h3 { color: var(--text-color); font-size: 1.05rem; display: flex; align-items: center; gap: 8px; }
+.shop-card p { color: var(--text-muted); font-size: 0.83rem; line-height: 1.3; }
+
+.shop-btn {
+background: var(--cyan-accent);
+color: #050b14;
+text-align: center;
+padding: 10px;
+border-radius: 8px;
+font-weight: bold;
+font-size: 0.85rem;
+text-decoration: none;
+margin-top: 4px;
+box-shadow: 0 0 8px rgba(0, 229, 255, 0.3);
+display: block;
+}
+
+.promo-box {
+background: rgba(255, 209, 102, 0.1);
+border: 1px dashed var(--yellow-gold);
+color: var(--yellow-gold);
+padding: 7px 10px;
+border-radius: 6px;
+font-size: 0.8rem;
+font-weight: bold;
+text-align: center;
+margin-top: 4px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.promo-code-badge {
+background: var(--yellow-gold);
+color: #050b14;
+padding: 2px 8px;
+border-radius: 4px;
+font-size: 0.75rem;
+font-weight: 900;
+letter-spacing: 0.5px;
+}
+</style>
+</head>
+<body>
+
+<!-- ÉCRAN DE CONNEXION / INSCRIPTION -->
+<div id="login-overlay">
+<div class="login-card">
+<div class="logo-brand" style="text-align: center; margin-bottom: 20px; font-size: 1.6rem;">MX Atelier</div>
+<h3 id="auth-title" style="color: var(--yellow-gold); margin-bottom: 15px; text-align: center;">Connexion Pilote</h3>
+
+<div class="form-group" id="name-group" style="display: none;">
+<label>Nom et Prénom du pilote :</label>
+<input type="text" id="auth-name" placeholder="ex: Jean Dupont">
+</div>
+
+<div class="form-group">
+<label>Email :</label>
+<input type="email" id="auth-email" placeholder="pilote@example.com">
+</div>
+
+<div class="form-group">
+<label>Mot de passe :</label>
+<input type="password" id="auth-password" placeholder="••••••••">
+</div>
+
+<button class="btn-action" id="auth-btn" onclick="handleAuthSubmit()">Se connecter</button>
+
+<p id="auth-toggle-text" style="text-align: center; margin-top: 15px; font-size: 0.85rem; color: var(--text-muted); cursor: pointer;" onclick="toggleAuthMode()">
+Pas encore de compte ? <span style="color: var(--cyan-accent); font-weight: bold;">S'inscrire</span>
+</p>
+</div>
+</div>
+
+<!-- EN-TÊTE MX ATELIER -->
+<div class="app-top-header">
+<div class="logo-brand">MX Atelier</div>
+<div class="icon-container">
+    <div style="position: relative;">
+        <button class="icon-btn" id="bell-btn" onclick="toggleMenu('bell-menu')">
+            🔔 <span class="badge" id="notif-badge">2</span>
+        </button>
+        <div class="dropdown-menu" id="bell-menu">
+            <h4>Notifications</h4>
+            <ul>
+                <li>🎉 Bienvenue sur MX Atelier !</li>
+                <li>🏆 Suivi automatique actif (2T / 4T).</li>
+            </ul>
+        </div>
+    </div>
+
+    <div style="position: relative;">
+        <button class="icon-btn" id="gear-btn" onclick="toggleMenu('gear-menu')">⚙️</button>
+        <div class="dropdown-menu" id="gear-menu">
+            <h4>Paramètres</h4>
+            <ul>
+                <li onclick="changePilotName()">✏️ Modifier mon nom et prénom</li>
+                <li onclick="toggleTheme()">🌓 Basculer Mode Clair/Sombre</li>
+                <li onclick="resetGamificationPoints()">🔄 Réinitialiser les données</li>
+                <li onclick="logoutUser()">🚪 Se déconnecter</li>
+                <li onclick="alert('Support technique MX Atelier : support@mxatelier.com')">💬 Aide & Support</li>
+            </ul>
+        </div>
+    </div>
+</div>
+</div>
+
+<div class="main-content">
+
+<!-- SECTION ACCUEIL -->
+<section id="accueil" class="tab-section active">
+<div id="welcome-user-title" style="font-size: 1.25rem; font-weight: bold; margin-bottom: 12px; color: var(--text-color);">
+👋 Bonjour, <span style="color: var(--cyan-accent);" id="welcome-name-span">Pilote</span> !
+</div>
+
+<div class="gamification-card">
+    <h3 style="color: var(--yellow-gold); font-size: 1.05rem; margin-bottom: 8px;">🏆 Profil : <span id="pilot-name-display" style="color:#fff; font-weight:bold;">Pilote</span></h3>
+    <div style="margin-bottom: 6px;">
+        <div id="status-badge" class="status-badge bronze">Bronze 🥉</div>
+    </div>
+</div>
+
+<div class="hero-garage-card" onclick="switchTab('garage')">
+<div class="hero-garage-info">
+<h3>Mon Garage <span id="homeGarageCount" style="font-size:0.8rem; background:var(--brand-orange); padding:2px 8px; border-radius:10px; color:#fff;">0</span></h3>
+<p id="homeBikeSubtitle">Aucune moto dans le garage</p>
+<span class="hero-garage-cta">Accéder à mon garage →</span>
+</div>
+<img id="homeBikeImg" class="hero-garage-img" src="" alt="Moto" style="display:none;">
+</div>
+
+<div class="quick-shortcuts">
+<div class="shortcut-card" onclick="switchTab('shop')">
+<span>🛍️</span>
+<label>Promos</label>
+</div>
+<div class="shortcut-card" onclick="switchTab('conseils')">
+<span>💡</span>
+<label>Conseils</label>
+</div>
+</div>
+
+<div class="action-banner banner-blue" onclick="switchTab('circuits')">
+<div class="banner-content-left">
+<div class="banner-icon-box">📍</div>
+<div>
+<span class="banner-title">Circuits ouverts</span>
+<span class="banner-subtitle">Voir tous les circuits disponibles (Hauts-de-France & BE)</span>
+</div>
+</div>
+<span>➔</span>
+</div>
+
+<div class="action-banner banner-light" onclick="switchTab('chronos')">
+<div class="banner-content-left">
+<div class="banner-icon-box">⏱️</div>
+<div>
+<span class="banner-title">Chrono GPS & Tours</span>
+<span class="banner-subtitle">Enregistre et analyse tes chronos par circuit</span>
+</div>
+</div>
+<span>➔</span>
+</div>
+</section>
+
+<!-- SECTION GARAGE -->
+<section id="garage" class="tab-section">
+<h2>Mes Motos</h2>
+<div id="garageBikesList"></div>
+
+<h2 style="margin-top:25px;">Ajouter une moto</h2>
+
+<div class="grid-2">
+<div class="form-group">
+<label>Constructeur :</label>
+<select id="brandSelect" onchange="updateModels()"></select>
+</div>
+<div class="form-group">
+<label>Modèle :</label>
+<select id="modelSelect"></select>
+</div>
+</div>
+
+<div class="grid-2">
+<div class="form-group">
+<label>Année :</label>
+<input type="number" id="bikeYear" value="2026">
+</div>
+<div class="form-group">
+<label>Heures actuelles :</label>
+<input type="number" id="initialHours" step="0.1" value="0.0">
+</div>
+</div>
+
+<div class="form-group">
+<label>Photo de la moto :</label>
+<label for="bikePhotoInput" class="photo-upload-label">
+📷 Prendre une photo / Choisir dans la galerie
+</label>
+<input type="file" id="bikePhotoInput" accept="image/*" style="display:none;" onchange="handlePhotoSelect(event)">
+<img id="photoPreview" class="photo-preview" src="">
+</div>
+
+<button class="btn-action" onclick="addBikeToGarage()">+ Enregistrer la moto</button>
+</section>
+
+<!-- SECTION ENTRETIEN -->
+<section id="entretien" class="tab-section">
+<h2>Carnet d'Entretien</h2>
+
+<div class="form-group">
+<label>Moto sélectionnée :</label>
+<select id="maintBikeSelect" onchange="loadMaintenanceLogs()"></select>
+</div>
+
+<div class="maint-container">
+<label style="margin-bottom: 8px;">Coche les interventions réalisées :</label>
+<div id="maintCheckboxesContainer"></div>
+</div>
+
+<div style="background: var(--card-inner); padding: 12px; border-radius: 10px; margin-bottom: 15px; border: 1px solid var(--border-color);">
+<div class="grid-2">
+<div class="form-group">
+<label>Heures ajoutées :</label>
+<input type="number" id="addHours" step="0.1" placeholder="ex: 2.5">
+</div>
+<div class="form-group">
+<label>Notes / Pièces :</label>
+<input type="text" id="maintNotes" placeholder="ex: Huile Motul 300V, Piston Vertex...">
+</div>
+</div>
+
+<button class="btn-action" onclick="addMaintenanceRecord()">Ajouter l'entretien groupé</button>
+</div>
+
+<h3>Historique</h3>
+<div id="maintenanceHistory" style="margin-top:10px;"></div>
+</section>
+
+<!-- SECTION SUSPENSIONS -->
+<section id="suspension" class="tab-section">
+<h2>⚙️ Réglages Suspensions</h2>
+
+<div class="form-group">
+<label>Moto sélectionnée :</label>
+<select id="suspBikeSelect" onchange="loadSuspensionSettings()"></select>
+</div>
+
+<div class="grid-2">
+<div style="background: var(--card-inner); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color);">
+<h4 style="color:var(--yellow-gold); margin-bottom:8px;">FOURCHE AVANT</h4>
+<div class="form-group"><label>Compression (clics):</label><input type="number" id="forkComp" value="12"></div>
+<div class="form-group"><label>Rebond / Détente (clics):</label><input type="number" id="forkReb" value="10"></div>
+</div>
+
+<div style="background: var(--card-inner); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color);">
+<h4 style="color:var(--yellow-gold); margin-bottom:8px;">AMORTISSEUR ARRIÈRE</h4>
+<div class="form-group"><label>Compression (clics):</label><input type="number" id="shockComp" value="12"></div>
+<div class="form-group"><label>Rebond / Détente (clics):</label><input type="number" id="shockReb" value="10"></div>
+<div class="form-group"><label>SAG Statique (mm):</label><input type="number" id="shockSagStatic" value="35"></div>
+<div class="form-group"><label>SAG Dynamique (mm):</label><input type="number" id="shockSagRider" value="105"></div>
+</div>
+</div>
+
+<div class="form-group" style="margin-top: 12px;">
+<label>Notes / Ressenti suspensions :</label>
+<input type="text" id="suspNotes" placeholder="ex: Trop souple dans le défoncé, durci de 2 clics">
+</div>
+
+<button class="btn-action" onclick="saveSuspensionSettings()">💾 Sauvegarder les clics & sag</button>
+</section>
+
+<!-- SECTION CHRONOS & CIRCUITS -->
+<section id="chronos" class="tab-section">
+<h2>⏱️ Suivi Chronos & Piste</h2>
+
+<div style="background: var(--card-inner); padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid var(--border-color); text-align: center;">
+<h3 style="color: var(--yellow-gold); margin-bottom: 10px; font-size:1rem;">⏱️ Chronomètre en direct</h3>
+<div id="stopwatchDisplay" style="font-size: 2.3rem; font-weight: 900; color: var(--cyan-accent); font-family: monospace; margin-bottom: 15px; text-shadow: 0 0 10px rgba(0,229,255,0.3);">00:00.00</div>
+
+<div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 12px;">
+<button class="btn-action" style="background: var(--success-green); margin-top:0;" onclick="startStopwatch()">▶️ Start</button>
+<button class="btn-action" style="background: var(--danger-red); margin-top:0;" onclick="stopStopwatch()">⏸️ Stop</button>
+<button class="btn-action" style="background: var(--text-muted); color:#fff; margin-top:0;" onclick="resetStopwatch()">🔄 Reset</button>
+</div>
+
+<button class="btn-action" style="background: var(--yellow-gold); color:#050b14; font-size:0.85rem; padding:10px;" onclick="useCurrentChrono()">👇 Copier ce chrono dans le formulaire</button>
+</div>
+
+<div class="form-group">
+<label>Nom du circuit :</label>
+<input type="text" id="circuitName" placeholder="ex: Loon-Plage, Lommel...">
+</div>
+
+<div class="grid-2">
+<div class="form-group">
+<label>Chrono (ex: 1:45.50) :</label>
+<input type="text" id="lapTime" placeholder="ex: 1:42.30">
+</div>
+<div class="form-group">
+<label>Moto utilisée :</label>
+<select id="chronoBikeSelect"></select>
+</div>
+</div>
+
+<div class="form-group">
+<label>Notes / Conditions piste :</label>
+<input type="text" id="chronoNotes" placeholder="ex: Terrain sablonneux, bon grip, session 1">
+</div>
+
+<button class="btn-action" onclick="saveChronoRecord()">💾 Sauvegarder le chrono</button>
+
+<h3 style="margin-top:25px; color:var(--cyan-accent);">Historique & Records</h3>
+<div id="chronosHistoryList" style="margin-top:10px;"></div>
+</section>
+
+<!-- SECTION CIRCUITS -->
+<section id="circuits" class="tab-section">
+<div class="mx-header-banner">📍 MX ATELIER • ENTRAÎNEMENT MOTOCROSS (HAUTS-DE-FRANCE & BE)</div>
+<p id="geoStatusText" style="text-align: center; font-size: 0.75rem; color: var(--yellow-gold); margin-bottom: 12px; cursor: pointer;" onclick="initGeolocation()">
+  📍 Localisation GPS en cours...
+</p>
+
+<div class="mx-subnav">
+<div class="rp-tab active" id="tab-mode-regions" onclick="switchRpMode('regions')">🗺️ Régions</div>
+<div class="rp-tab" id="tab-mode-liste" onclick="switchRpMode('liste')">📋 Liste complète</div>
+</div>
+
+<div id="rp-view-regions">
+<p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 12px; text-align: center;">Sélectionne une région pour voir les terrains d'entraînement ouverts :</p>
+<div id="regionsGridContainer" class="regions-grid"></div>
+</div>
+
+<div id="rp-view-liste" style="display: none;">
+<div style="margin-bottom: 12px;">
+<input type="text" id="circuitSearchInput" placeholder="🔍 Rechercher un circuit d'entraînement..." oninput="filterCircuitsBySearch()">
+</div>
+<div id="circuitsListContainer"></div>
+</div>
+
+<div id="rp-view-region-detail" style="display: none;">
+<button class="btn-action" style="background: var(--border-color); color:#fff; padding: 8px; margin-bottom: 12px; font-size:0.8rem;" onclick="backToRegions()">⬅️ Retour aux régions</button>
+<h3 id="selectedRegionTitle" style="color: var(--brand-orange); margin-bottom: 12px; text-transform: uppercase;"></h3>
+<div id="regionCircuitsContainer"></div>
+</div>
+</section>
+
+<!-- SECTION SHOP & CODES PROMO -->
+<section id="shop" class="tab-section">
+<h2>🛒 Shop & Codes Promo</h2>
+<p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px;">Accède en 1 clic aux principaux sites cross et profite de tes codes promo exclusifs :</p>
+
+<div class="shop-card">
+<h3>📦 24MX</h3>
+<p>Le géant européen de l'équipement pilote, pièces détachées et accessoires cross.</p>
+<a href="https://www.24mx.fr" target="_blank" class="shop-btn">Visiter 24MX ↗</a>
+<div class="promo-box">
+<span>🎟️ Code / Offre :</span>
+<span class="promo-code-badge">PROMO24MX</span>
+</div>
+</div>
+
+<div class="shop-card">
+<h3>⚙️ 3AS Racing</h3>
+<p>Spécialiste français de la pièce moto, quad et tout-terrain (kits chaîne, pistons...).</p>
+<a href="https://www.3as-racing.com" target="_blank" class="shop-btn">Visiter 3AS Racing ↗</a>
+<div class="promo-box">
+<span>🎟️ Code / Offre :</span>
+<span class="promo-code-badge">TONTON10</span>
+</div>
+</div>
+
+<div class="shop-card">
+<h3>🔧 FX Motors</h3>
+<p>Boutique dédiée au motocross, enduro, pièces moteur et kits déco.</p>
+<a href="https://www.fxmotors.fr" target="_blank" class="shop-btn">Visiter FX Motors ↗</a>
+</div>
+
+<div class="shop-card">
+<h3>🏁 Tonnycat</h3>
+<p>Spécialiste en pièces performance, accessoires cross et quad pour toutes cylindrées.</p>
+<a href="https://www.tonnycat.com" target="_blank" class="shop-btn">Visiter Tonnycat ↗</a>
+</div>
+
+<div class="shop-card">
+<h3>🛡️ Motoblouz / Dafy Moto</h3>
+<p>Idéal pour racheter rapidement des casques, masques, bottes et protections.</p>
+<a href="https://www.motoblouz.com" target="_blank" class="shop-btn">Visiter Motoblouz ↗</a>
+</div>
+
+<div class="shop-card">
+<h3>🛒 Motodiffusion</h3>
+<p>Équipements, pièces et accessoires pour le motocross et l'enduro.</p>
+<a href="https://www.motodiffusion.com" target="_blank" class="shop-btn">Visiter Motodiffusion ↗</a>
+<div class="promo-box">
+<span>🎟️ Code / Offre :</span>
+<span class="promo-code-badge">MIOT10</span>
+</div>
+</div>
+</section>
+
+<!-- SECTION CONSEILS MÉCANIQUES -->
+<section id="conseils" class="tab-section">
+<h2>💡 Guide Complet & Conseils Mécaniques</h2>
+
+<div class="tip-category">💨 Moteur, Air & Carburation</div>
+<div class="tip-item">
+<h3>1. Filtre à air & Boîte à air</h3>
+<p>À nettoyer et graisser <strong>tous les 1 à 2 roulements max</strong> (particulièrement dans le sable). Vérifie l'étanchéité de la mousse pour éviter l'ingestion de sable ou de poussière.</p>
+</div>
+<div class="tip-item">
+<h3>2. Vidanges & Haut-Moteur (2T vs 4T)</h3>
+<p>• <strong>4T :</strong> Vidange huile moteur + filtre toutes les 5h | Piston toutes les 60h | Soupapes toutes les 30h.<br>• <strong>2T :</strong> Vidange de boîte toutes les 10h | Piston & segments toutes les 20h.</p>
+</div>
+
+<div class="tip-category">🛑 Freins & Sécurité</div>
+<div class="tip-item">
+<h3>3. Plaquettes et Liquide de frein</h3>
+<p>Contrôle l'épaisseur des garnitures de plaquettes avant chaque sortie. Purge le liquide de frein (DOT 4 ou 5.1) au moins 1 à 2 fois par saison pour garder un mordant optimal et éviter l'effet spongieux.</p>
+</div>
+<div class="tip-item">
+<h3>4. Disques de frein</h3>
+<p>Vérifie l'épaisseur minimale gravée sur le disque. Un disque voilé ou trop usé détruit prématurément les plaquettes et compromet le freinage en entrée de virage.</p>
+</div>
+
+<div class="tip-category">⚙️ Suspensions & Partie Cycle</div>
+<div class="tip-item">
+<h3>5. Fourche & Joints Spys</h3>
+<p>Nettoie régulièrement les tubes de fourche après chaque roulage et utilise un chasse-boue ou protège-joint. Pense à purger l'air accumulé dans les fourreaux via la vis de purge supérieure avant de rouler.</p>
+</div>
+<div class="tip-item">
+<h3>6. Graissage des roulements (Colonne & Biellettes)</h3>
+<p>Le point noir du motocross : démonte, nettoie et regraisse les roulements de bras oscillant, de biellettes et de colonne de direction <strong>toutes les 20 à 30 heures</strong> pour éviter le grippage et le jeu.</p>
+</div>
+
+<div class="tip-category">⛓️ Transmission & Roues</div>
+<div class="tip-item">
+<h3>7. Kit chaîne & Tension</h3>
+<p>Laisse toujours un jeu vertical d'environ 35 à 40 mm. Une chaîne trop tendue force sur l'arbre de sortie de boîte et risque d'endommager les roulements de boîte de vitesses.</p>
+</div>
+<div class="tip-item">
+<h3>8. Rayons & Pression des pneus</h3>
+<p>Vérifie la tension des rayons au tournevis (ils doivent sonner clair) avant chaque sortie. Contrôle ta pression (ex: 0.9 à 1.1 bar en pneu standard, ou vérification des mousses).</p>
+</div>
+
+<div class="tip-category">⚡ Électricité & Commandes</div>
+<div class="tip-item">
+<h3>9. Bougie & Antiparasite</h3>
+<p>Surveille la couleur de l'électrode (chocolat clair = bon réglage). Vérifie que l'antiparasite est bien emboîté et étanche pour éviter les coupures moteur dans les passages d'eau ou boueux.</p>
+</div>
+</section>
+
+</div>
+
+<!-- BARRE DE NAVIGATION FLOTTANTE EN BAS -->
+<nav class="floating-nav">
+<button class="nav-item active" id="nav-accueil" onclick="switchTab('accueil', event)">
+<span>🏠</span>Accueil
+</button>
+<button class="nav-item" id="nav-garage" onclick="switchTab('garage', event)">
+<span>🏍️</span>Garage
+</button>
+<button class="nav-item" id="nav-entretien" onclick="switchTab('entretien', event)">
+<span>🛠️</span>Entretien
+</button>
+<button class="nav-item" id="nav-suspension" onclick="switchTab('suspension', event)">
+<span>⚙️</span>Suspensions
+</button>
+<button class="nav-item" id="nav-chronos" onclick="switchTab('chronos', event)">
+<span>⏱️</span>Chronos
+</button>
+<button class="nav-item" id="nav-shop" onclick="switchTab('shop', event)">
+<span>🛍️</span>Shop
+</button>
+</nav>
+
+<!-- MODAL DOSSIER MOTO -->
+<div id="dossierModal" class="modal-overlay" onclick="if(event.target === this) closeDossierModal()">
+<div class="modal-content">
+<button class="btn-danger" style="float:right;" onclick="closeDossierModal()">Fermer</button>
+<div id="dossierBody"></div>
+</div>
+</div>
+
+<script>
+const catalog = {
+"KTM": { color: "#ff6600", bg: "#ff6600", text: "#000", models: ["50 SX", "65 SX", "85 SX", "125 SX", "150 SX", "250 SX", "250 SX-F", "350 SX-F", "450 SX-F"] },
+"Yamaha": { color: "#0044ff", bg: "#0044ff", text: "#fff", models: ["PW 50", "YZ 65", "YZ 85", "YZ 125", "YZ 250", "YZ 250F", "YZ 450F"] },
+"Honda": { color: "#ff002b", bg: "#ff002b", text: "#fff", models: ["CRF 50F", "CRF 110F", "CRF 125F", "CRF 150R", "CRF 250R", "CRF 450R"] },
+"Kawasaki": { color: "#00ff33", bg: "#00ff33", text: "#000", models: ["KX 65", "KX 85", "KX 112", "KX 250", "KX 450"] },
+"Suzuki": { color: "#ffee00", bg: "#ffee00", text: "#000", models: ["RM 85", "RM 125", "RM-Z 250", "RM-Z 450"] },
+"Husqvarna": { color: "#002b66", bg: "#ffffff", text: "#002b66", models: ["EE 3", "EE 5", "TC 50", "TC 65", "TC 85", "TC 125", "TC 250", "FC 250", "FC 450"] },
+"GasGas": { color: "#cc0029", bg: "#cc0029", text: "#fff", models: ["MC 50", "MC 65", "MC 85", "MC 125", "MC 250F", "MC 450F"] },
+"Beta": { color: "#e60000", bg: "#e60000", text: "#fff", models: ["Mini 50", "RR 125", "RX 300", "RX 450"] },
+"Sherco": { color: "#0055ff", bg: "#ffee00", text: "#000", models: ["SE 50", "SE 125", "SEF 250", "SEF 300", "SEF 450"] },
+"Fantic": { color: "#ff0000", bg: "#000000", text: "#fff", models: ["Minitrial 50", "XX 125", "XXF 250", "XXF 450"] },
+"Triumph": { color: "#e6b800", bg: "#000000", text: "#ffee00", models: ["TF 250-X", "TF 450-X"] },
+"Stark Future": { color: "#00ffaa", bg: "#222222", text: "#00ffaa", models: ["Stark VARG 60hp", "Stark VARG 80hp"] }
+};
+
+const maintenanceOptions = [
+{
+category: "⚙️ MOTEUR & ALIMENTATION",
+items: ["Vidange Huile Moteur + Filtre (4T)", "Vidange Boîte de Vitesses (2T)", "Changement Piston & Segments", "Réglage Jeu aux Soupapes (4T)", "Changement Bougie", "Kit Embrayage (Disques / Ressorts)", "Nettoyage / Graissage Filtre à Air", "Filtre à Air Neuf", "Nettoyage Carburateur / Injecteur"]
+},
+{
+category: "🏁 SUSPENSIONS & CHÂSSIS",
+items: ["Vidange Fourche + Joints Spys", "Reconditionnement Amortisseur", "Graissage Roulements Biellettes / Bras", "Graissage Roulements Colonne Direction"]
+},
+{
+category: "🛑 FREINS & TRANSMISSION",
+items: ["Kit Chaîne Neuf (Chaîne, Pignon, Couronne)", "Tension & Graissage Chaîne", "Plaquettes de Frein AV / AR", "Purge Liquide de Frein (AV / AR)"]
+},
+{
+category: "🛞 PNEUMATIQUES & ROUES",
+items: ["Pneu Avant Neuf", "Pneu Arrière Neuf", "Chambre à Air / Bib Mousse"]
+},
+{
+category: "➕ AUTRE",
+items: ["Autre (préciser)"]
+}
+];
+
+const circuitsData = [
+  { name: "Loon-Plage (La Haute Forme)", region: "Hauts-de-France", type: "Sable", location: "Nord (59)", description: "La référence incontournable du sable en France.", status: "Ouvert", lat: 50.9814, lng: 2.2965 },
+  { name: "Condé-sur-l'Escaut", region: "Hauts-de-France", type: "Terre", location: "Nord (59)", description: "Circuit mythique proche de la frontière belgo-française.", status: "Ouvert", lat: 50.4505, lng: 3.5936 },
+  { name: "Arleux", region: "Hauts-de-France", type: "Terre / SX", location: "Nord (59)", description: "Circuit technique très fréquenté.", status: "Ouvert", lat: 50.2900, lng: 3.0300 },
+  { name: "Avesnes-sur-Helpe", region: "Hauts-de-France", type: "Terre", location: "Nord (59)", description: "Circuit de Bellefontaine, cadre naturel.", status: "Ouvert", lat: 50.1200, lng: 3.9300 },
+  { name: "Cassel", region: "Hauts-de-France", type: "Terre / Dénivelé", location: "Nord (59)", description: "Piste avec un superbe panorama.", status: "Ouvert", lat: 50.8000, lng: 2.4800 },
+  { name: "Merville", region: "Hauts-de-France", type: "Terre", location: "Nord (59)", description: "Entraînement accessible et bien entretenu.", status: "Ouvert", lat: 50.6400, lng: 2.6400 },
+  { name: "Bailleul", region: "Hauts-de-France", type: "Terre", location: "Nord (59)", description: "Piste appréciée des clubs locaux.", status: "Ouvert", lat: 50.7300, lng: 2.7300 },
+  { name: "Fontaine-au-Pire", region: "Hauts-de-France", type: "Terre / Cambraisis", location: "Nord (59)", description: "Tracé technique et sélectif.", status: "Ouvert", lat: 50.1200, lng: 3.3800 },
+  { name: "Isbergues (Circuit Marcel Mullet)", region: "Hauts-de-France", type: "Terre", location: "Pas-de-Calais (62)", description: "Club actif affilié FFM.", status: "Ouvert", lat: 50.6300, lng: 2.4600 },
+  { name: "Wingles", region: "Hauts-de-France", type: "Terre", location: "Pas-de-Calais (62)", description: "Base de loisirs et terrain MX réputé.", status: "Ouvert", lat: 50.4800, lng: 2.8700 },
+  { name: "Clarques", region: "Hauts-de-France", type: "Terre", location: "Pas-de-Calais (62)", description: "Superbe tracé vallonné.", status: "Ouvert", lat: 50.6700, lng: 2.2500 },
+  { name: "Gouy-en-Artois", region: "Hauts-de-France", type: "Terre", location: "Pas-de-Calais (62)", description: "Piste technique préparée avec soin.", status: "Ouvert", lat: 50.2300, lng: 2.6800 },
+  { name: "Maricourt", region: "Hauts-de-France", type: "Terre", location: "Somme (80)", description: "Grand circuit réputé de la Somme.", status: "Ouvert", lat: 49.9500, lng: 2.7500 },
+  { name: "Ailly-sur-Noye", region: "Hauts-de-France", type: "Terre", location: "Somme (80)", description: "Tracé technique en pleine nature.", status: "Ouvert", lat: 49.7600, lng: 2.3600 },
+  { name: "Flixecourt", region: "Hauts-de-France", type: "Terre", location: "Somme (80)", description: "Piste d'entraînement formateur.", status: "Ouvert", lat: 49.9800, lng: 2.1500 },
+  { name: "Beauvais", region: "Hauts-de-France", type: "Terre", location: "Oise (60)", description: "Terrain permanent FFM de premier plan.", status: "Ouvert", lat: 49.4200, lng: 2.0800 },
+  { name: "Blargies (Tréforet)", region: "Hauts-de-France", type: "Terre", location: "Oise (60)", description: "Circuit technique très apprécié des pilotes.", status: "Ouvert", lat: 49.6700, lng: 1.6800 },
+  { name: "Bonneuil-en-Valois", region: "Hauts-de-France", type: "Terre", location: "Oise (60)", description: "Piste idéale pour tous niveaux.", status: "Ouvert", lat: 49.2500, lng: 2.9200 },
+  { name: "Crisolles (Le Cul de l'Enfer)", region: "Hauts-de-France", type: "Terre", location: "Oise (60)", description: "Tracé vallonné et exigeant.", status: "Ouvert", lat: 49.6000, lng: 3.0300 },
+  { name: "Ribécourt-Dreslincourt", region: "Hauts-de-France", type: "Terre", location: "Oise (60)", description: "Circuit permanent de l'Oise.", status: "Ouvert", lat: 49.5300, lng: 2.8700 },
+  { name: "Landricourt", region: "Hauts-de-France", type: "Terre meuble", location: "Aisne (02)", description: "Superbe piste naturelle très appréciée.", status: "Ouvert", lat: 49.5247, lng: 3.3211 },
+  { name: "Plomion", region: "Hauts-de-France", type: "Terre", location: "Aisne (02)", description: "Circuit incontournable de l'Aisne, cadre boisé.", status: "Ouvert", lat: 49.8200, lng: 3.9600 },
+  { name: "Amigny-Rouy", region: "Hauts-de-France", type: "Terre / Sable", location: "Aisne (02)", description: "Piste variée et technique.", status: "Ouvert", lat: 49.6200, lng: 3.2200 },
+  { name: "Clastres (MX Park)", region: "Hauts-de-France", type: "Terre", location: "Aisne (02)", description: "Infrastructure moderne sur ancienne base.", status: "Ouvert", lat: 49.7700, lng: 3.1400 },
+  { name: "Rozoy-sur-Serre", region: "Hauts-de-France", type: "Terre", location: "Aisne (02)", description: "Circuit de la Justice, technique.", status: "Ouvert", lat: 49.6800, lng: 4.1300 },
+  { name: "Lommel (Motorcrosscentrum)", region: "Belgique - Flandre", type: "Sable", location: "Limbourg (BE)", description: "Le temple mondial du sable.", status: "Ouvert", lat: 51.2312, lng: 5.3112 },
+  { name: "Genk (Horenbergdam)", region: "Belgique - Flandre", type: "Terre / Technique", location: "Limbourg (BE)", description: "Circuit technique permanent de premier plan.", status: "Ouvert", lat: 50.9612, lng: 5.5312 },
+  { name: "Lierneux", region: "Belgique - Wallonie", type: "Terre / Dénivelé", location: "Luxembourg (BE)", description: "Superbe circuit ardennais vallonné.", status: "Ouvert", lat: 50.2812, lng: 5.7912 },
+  { name: "Domaine de Bilstain", region: "Belgique - Wallonie", type: "Enduro / Technique", location: "Liège (BE)", description: "Site tout-terrain légendaire.", status: "Ouvert", lat: 50.6012, lng: 5.8612 }
+];
+
+let garageBikes = [];
+let circuitChronos = [];
+let currentUploadedPhotoBase64 = "";
+let userLat = 50.4116;
+let userLng = 4.1647;
+let gamificationPoints = localStorage.getItem('mx_user_points') ? parseInt(localStorage.getItem('mx_user_points')) : 1;
+let isRegisterMode = false;
+
+window.onload = function() {
+checkAuthStatus();
+initBrandSelect();
+initMaintenanceCheckboxes();
+loadFromLocalStorage();
+updateBikeSelects();
+renderGarageBikes();
+loadChronosHistory();
+initGeolocation();
+updateHomeDashboard();
+updateGamificationDisplay();
+updatePilotIdentity();
+};
+
+function checkAuthStatus() {
+const currentUser = localStorage.getItem('mx_current_user');
+const overlay = document.getElementById('login-overlay');
+if (currentUser) {
+if(overlay) overlay.style.display = 'none';
+updatePilotIdentity();
+} else {
+if(overlay) overlay.style.display = 'flex';
+}
+}
+
+function toggleAuthMode() {
+isRegisterMode = !isRegisterMode;
+const titleEl = document.getElementById('auth-title');
+const btnEl = document.getElementById('auth-btn');
+const toggleText = document.getElementById('auth-toggle-text');
+const nameGroup = document.getElementById('name-group');
+
+if (isRegisterMode) {
+titleEl.innerText = "Créer un compte Pilote";
+btnEl.innerText = "S'inscrire";
+nameGroup.style.display = 'block';
+toggleText.innerHTML = `Déjà un compte ? <span style="color: var(--cyan-accent); font-weight: bold;">Se connecter</span>`;
+} else {
+titleEl.innerText = "Connexion Pilote";
+btnEl.innerText = "Se connecter";
+nameGroup.style.display = 'none';
+toggleText.innerHTML = `Pas encore de compte ? <span style="color: var(--cyan-accent); font-weight: bold;">S'inscrire</span>`;
+}
+}
+
+function handleAuthSubmit() {
+const email = document.getElementById('auth-email').value.trim() || "pilote@mxatelier.com";
+const nameInput = document.getElementById('auth-name').value.trim();
+let name = isRegisterMode && nameInput !== "" ? nameInput : (localStorage.getItem('mx_user_name') || "Pilote");
+if(nameInput !== "") name = nameInput;
+
+localStorage.setItem('mx_current_user', email);
+localStorage.setItem('mx_user_name', name);
+
+const overlay = document.getElementById('login-overlay');
+if(overlay) overlay.style.display = 'none';
+
+updatePilotIdentity();
+updateGamificationDisplay();
+updateHomeDashboard();
+}
+
+function changePilotName() {
+const currentName = localStorage.getItem('mx_user_name') || 'Pilote';
+const newName = prompt("Entre ton nom et prénom :", currentName === 'Pilote' ? '' : currentName);
+if (newName !== null && newName.trim() !== "") {
+localStorage.setItem('mx_user_name', newName.trim());
+updatePilotIdentity();
+updateHomeDashboard();
+alert("Nom mis à jour !");
+}
+}
+
+function logoutUser() {
+if (confirm("Se déconnecter de MX Atelier ?")) {
+localStorage.removeItem('mx_current_user');
+location.reload();
+}
+}
+
+function updatePilotIdentity() {
+const name = localStorage.getItem('mx_user_name') || 'Pilote';
+const welcomeSpan = document.getElementById('welcome-name-span');
+if(welcomeSpan) welcomeSpan.innerText = name;
+const pilotNameDisplay = document.getElementById('pilot-name-display');
+if(pilotNameDisplay) pilotNameDisplay.innerText = name;
+}
+
+function toggleMenu(menuId) {
+const menu = document.getElementById(menuId);
+document.querySelectorAll('.dropdown-menu').forEach(m => { if (m.id !== menuId) m.classList.remove('active'); });
+menu.classList.toggle('active');
+}
+
+function toggleTheme() { document.body.classList.toggle('light-mode'); }
+
+function updateGamificationDisplay() {
+const badge = document.getElementById('status-badge');
+if(!badge) return;
+if (gamificationPoints >= 10) { badge.className = "status-badge gold"; badge.innerText = "Or 🥇"; }
+else if (gamificationPoints >= 5) { badge.className = "status-badge silver"; badge.innerText = "Argent 🥈"; }
+else { badge.className = "status-badge bronze"; badge.innerText = "Bronze 🥉"; }
+localStorage.setItem('mx_user_points', gamificationPoints);
+}
+
+function resetGamificationPoints() {
+if (confirm("Réinitialiser les données ?")) { gamificationPoints = 1; updateGamificationDisplay(); alert("Réinitialisé."); }
+}
+
+function initGeolocation() {
+const statusEl = document.getElementById('geoStatusText');
+if ("geolocation" in navigator) {
+navigator.geolocation.getCurrentPosition(
+(pos) => { userLat = pos.coords.latitude; userLng = pos.coords.longitude; if(statusEl) statusEl.innerText = "📍 GPS actif"; renderRegionsGrid(); renderCircuitsList(circuitsData); },
+(err) => { renderRegionsGrid(); renderCircuitsList(circuitsData); }
+);
+} else { renderRegionsGrid(); renderCircuitsList(circuitsData); }
+}
+
+function getUserDistance(lat, lng) {
+const R = 6371;
+const dLat = (lat - userLat) * Math.PI / 180;
+const dLon = (lng - userLng) * Math.PI / 180;
+const a = Math.sin(dLat/2)**2 + Math.cos(userLat * Math.PI / 180) * Math.cos(lat * Math.PI / 180) * Math.sin(dLon/2)**2;
+return Math.round(R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))));
+}
+
+function initMaintenanceCheckboxes() {
+const container = document.getElementById('maintCheckboxesContainer');
+if(!container) return;
+container.innerHTML = '';
+maintenanceOptions.forEach(group => {
+let catDiv = document.createElement('div');
+catDiv.className = 'maint-cat-title';
+catDiv.innerText = group.category;
+container.appendChild(catDiv);
+group.items.forEach(item => {
+let label = document.createElement('label');
+label.className = 'maint-checkbox-label';
+if (item === "Autre (préciser)") {
+    label.innerHTML = `<input type="checkbox" class="maint-checkbox" id="checkbox-autre" value="Autre" onchange="toggleCustomMaintInput(this)"> ${item}`;
+} else {
+    label.innerHTML = `<input type="checkbox" class="maint-checkbox" value="${item}"> ${item}`;
+}
+container.appendChild(label);
+});
+});
+
+if (!document.getElementById('customMaintInputGroup')) {
+let customDiv = document.createElement('div');
+customDiv.id = 'customMaintInputGroup';
+customDiv.style.display = 'none';
+customDiv.style.marginTop = '10px';
+customDiv.innerHTML = `
+    <div class="form-group" style="margin-bottom:0;">
+        <label>Précise ton autre intervention :</label>
+        <input type="text" id="customMaintInput" placeholder="ex: Pignon de boîte 3, soudure boucle...">
+    </div>
+`;
+container.parentNode.appendChild(customDiv);
+}
+}
+
+function toggleCustomMaintInput(checkbox) {
+const group = document.getElementById('customMaintInputGroup');
+if (group) {
+group.style.display = checkbox.checked ? 'block' : 'none';
+if (!checkbox.checked) {
+    document.getElementById('customMaintInput').value = '';
+}
+}
+}
+
+function handlePhotoSelect(event) {
+const file = event.target.files[0];
+if (file) {
+const reader = new FileReader();
+reader.onload = function(e) {
+const img = new Image();
+img.onload = function() {
+const canvas = document.createElement('canvas');
+let w = img.width, h = img.height, max = 800;
+if (w > h) { if (w > max) { h *= max / w; w = max; } } else { if (h > max) { w *= max / h; h = max; } }
+canvas.width = w; canvas.height = h;
+canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+currentUploadedPhotoBase64 = canvas.toDataURL('image/jpeg', 0.7);
+const preview = document.getElementById('photoPreview');
+if(preview) { preview.src = currentUploadedPhotoBase64; preview.style.display = 'block'; }
+};
+img.src = e.target.result;
+};
+reader.readAsDataURL(file);
+}
+}
+
+function saveToLocalStorage() {
+localStorage.setItem('mx_atelier_bikes', JSON.stringify(garageBikes));
+localStorage.setItem('mx_atelier_chronos', JSON.stringify(circuitChronos));
+}
+
+function loadFromLocalStorage() {
+const savedBikes = localStorage.getItem('mx_atelier_bikes');
+if (savedBikes) try { garageBikes = JSON.parse(savedBikes); } catch(e){}
+const savedChronos = localStorage.getItem('mx_atelier_chronos');
+if (savedChronos) try { circuitChronos = JSON.parse(savedChronos); } catch(e){}
+}
+
+function initBrandSelect() {
+const brandSelect = document.getElementById('brandSelect');
+if(!brandSelect) return;
+brandSelect.innerHTML = '';
+for (let brand in catalog) {
+let opt = document.createElement('option'); opt.value = brand; opt.innerText = brand;
+brandSelect.appendChild(opt);
+}
+updateModels();
+}
+
+function updateModels() {
+const brand = document.getElementById('brandSelect').value;
+const modelSelect = document.getElementById('modelSelect');
+if(!modelSelect) return;
+modelSelect.innerHTML = '';
+if(catalog[brand]) catalog[brand].models.forEach(m => {
+let opt = document.createElement('option'); opt.value = m; opt.innerText = m;
+modelSelect.appendChild(opt);
+});
+}
+
+// Fonction pour détecter si un modèle est 4 temps (4T) ou 2 temps (2T)
+function isFourStroke(brand, model) {
+    const m = model.toUpperCase();
+    if (m.includes('-F') || m.includes(' 250F') || m.includes(' 350F') || m.includes(' 450F') || m.includes('XXF') || m.includes('SEF') || m.includes('TF ')) {
+        return true;
+    }
+    if (brand === 'Honda' && (m.includes('CRF') || m.includes('R'))) return true;
+    if (m.includes('250F') || m.includes('450F') || m.includes('250-X') || m.includes('450-X')) return true;
+    if (m.includes('125') || m.includes('250 SX') || m.includes('YZ 125') || m.includes('YZ 250') || m.includes('TC 125') || m.includes('TC 250') || m.includes('MC 125') || m.includes('KX 112') || m.includes('RM 125')) {
+        return false;
+    }
+    return m.includes('F') || m.includes('450') || m.includes('350');
+}
+
+function addBikeToGarage() {
+const brand = document.getElementById('brandSelect').value;
+const model = document.getElementById('modelSelect').value;
+const year = document.getElementById('bikeYear').value;
+const hours = parseFloat(document.getElementById('initialHours').value) || 0;
+
+const is4T = isFourStroke(brand, model);
+const engineType = is4T ? '4T' : '2T';
+
+const bikeObj = {
+id: Date.now(), brand, model, year, totalHours: hours,
+engineType: engineType,
+color: catalog[brand].color, badgeBg: catalog[brand].bg, badgeText: catalog[brand].text,
+photo: currentUploadedPhotoBase64, logs: [],
+suspension: { forkComp: 12, forkReb: 10, shockComp: 12, shockReb: 10, shockSagStatic: 35, shockSagRider: 105, notes: "" },
+parts: {
+    piston: { lastChangedAt: 0, maxHours: is4T ? 60 : 20 }, // 60h pour 4T, 20h pour 2T
+    oil: { lastChangedAt: 0, maxHours: is4T ? 5 : 10 },    // 5h huile moteur (4T), 10h huile boîte (2T)
+    chain: { status: "Bon état" },
+    valves: is4T ? { lastChangedAt: 0, maxHours: 30 } : null // Jeu aux soupapes (4T uniquement)
+}
+};
+
+garageBikes.push(bikeObj);
+saveToLocalStorage();
+updateBikeSelects();
+renderGarageBikes();
+updateHomeDashboard();
+gamificationPoints += 2;
+updateGamificationDisplay();
+
+currentUploadedPhotoBase64 = "";
+document.getElementById('photoPreview').style.display = 'none';
+alert(`Moto ${brand} ${model} (${engineType}) enregistrée avec succès !`);
+}
+
+function deleteBike(bikeId, event) {
+event.stopPropagation();
+if (confirm("Supprimer cette moto ?")) {
+garageBikes = garageBikes.filter(b => b.id !== bikeId);
+saveToLocalStorage();
+updateBikeSelects();
+renderGarageBikes();
+updateHomeDashboard();
+}
+}
+
+function updateBikeSelects() {
+const maintSelect = document.getElementById('maintBikeSelect');
+const suspSelect = document.getElementById('suspBikeSelect');
+const chronoSelect = document.getElementById('chronoBikeSelect');
+if(maintSelect) maintSelect.innerHTML = '';
+if(suspSelect) suspSelect.innerHTML = '';
+if(chronoSelect) chronoSelect.innerHTML = '';
+
+garageBikes.forEach(bike => {
+let text = `${bike.brand} ${bike.model} (${bike.engineType || '2T'})`;
+let opt1 = document.createElement('option'); opt1.value = bike.id; opt1.innerText = `${text} - ${bike.totalHours.toFixed(1)} h`;
+if(maintSelect) maintSelect.appendChild(opt1);
+let opt2 = document.createElement('option'); opt2.value = bike.id; opt2.innerText = text;
+if(suspSelect) suspSelect.appendChild(opt2);
+let opt3 = document.createElement('option'); opt3.value = bike.id; opt3.innerText = text;
+if(chronoSelect) chronoSelect.appendChild(opt3);
+});
+
+if (garageBikes.length > 0) { loadSuspensionSettings(); loadMaintenanceLogs(); }
+}
+
+function updateHomeDashboard() {
+const countEl = document.getElementById('homeGarageCount');
+const subEl = document.getElementById('homeBikeSubtitle');
+const imgEl = document.getElementById('homeBikeImg');
+if(countEl) countEl.innerText = garageBikes.length;
+if(garageBikes.length > 0) {
+let latest = garageBikes[garageBikes.length - 1];
+if(subEl) subEl.innerText = `${latest.brand} ${latest.model} (${latest.engineType || '2T'}) - ${latest.totalHours.toFixed(1)}h`;
+if(imgEl && latest.photo) { imgEl.src = latest.photo; imgEl.style.display = 'block'; }
+else if(imgEl) { imgEl.style.display = 'none'; }
+} else {
+if(subEl) subEl.innerText = "Aucune moto dans le garage";
+if(imgEl) imgEl.style.display = 'none';
+}
+}
+
+function renderGarageBikes() {
+const container = document.getElementById('garageBikesList');
+if(!container) return;
+container.innerHTML = garageBikes.length === 0 ? '<p style="color:var(--text-muted); text-align:center;">Aucune moto enregistrée pour le moment.</p>' : '';
+garageBikes.forEach(bike => {
+let photoHtml = bike.photo ? `<img src="${bike.photo}" alt="Moto">` : `<div style="color:var(--text-muted);">Pas de photo</div>`;
+
+if(!bike.engineType) bike.engineType = isFourStroke(bike.brand, bike.model) ? '4T' : '2T';
+if(!bike.parts) {
+    bike.parts = { 
+        piston: { lastChangedAt: 0, maxHours: bike.engineType === '4T' ? 60 : 20 }, 
+        oil: { lastChangedAt: 0, maxHours: bike.engineType === '4T' ? 5 : 10 }, 
+        chain: { status: "Bon état" },
+        valves: bike.engineType === '4T' ? { lastChangedAt: 0, maxHours: 30 } : null
+    };
+}
+
+let pistonMax = bike.parts.piston.maxHours || (bike.engineType === '4T' ? 60 : 20);
+let pistonCurrent = parseFloat((bike.totalHours - bike.parts.piston.lastChangedAt).toFixed(1));
+let pistonPct = Math.min(100, Math.round((pistonCurrent / pistonMax) * 100));
+let pistonColor = pistonPct > 85 ? 'var(--danger-red)' : (pistonPct > 60 ? 'var(--yellow-gold)' : 'var(--success-green)');
+
+let oilMax = bike.parts.oil.maxHours || (bike.engineType === '4T' ? 5 : 10);
+let oilCurrent = parseFloat((bike.totalHours - bike.parts.oil.lastChangedAt).toFixed(1));
+let oilPct = Math.min(100, Math.round((oilCurrent / oilMax) * 100));
+let oilColor = oilPct > 85 ? 'var(--danger-red)' : (oilPct > 60 ? 'var(--yellow-gold)' : 'var(--success-green)');
+
+let oilTitle = bike.engineType === '4T' ? `Vidange Moteur + Filtre (Max : ${oilMax}h)` : `Vidange Boîte de vitesses (Max : ${oilMax}h)`;
+let pistonTitle = bike.engineType === '4T' ? `Piston / Distribution (Max : ${pistonMax}h)` : `Piston & Segments (Max : ${pistonMax}h)`;
+
+let valvesHtml = '';
+if(bike.engineType === '4T' && bike.parts.valves) {
+    let valveMax = bike.parts.valves.maxHours || 30;
+    let valveCurrent = parseFloat((bike.totalHours - bike.parts.valves.lastChangedAt).toFixed(1));
+    let valvePct = Math.min(100, Math.round((valveCurrent / valveMax) * 100));
+    let valveColor = valvePct > 85 ? 'var(--danger-red)' : (valvePct > 60 ? 'var(--yellow-gold)' : 'var(--success-green)');
+    valvesHtml = `
+    <div class="part-item">
+    <div class="part-header">
+    <span>Jeu aux Soupapes (Max : ${valveMax}h)</span>
+    <span style="color:${valveColor};">${valveCurrent}h / ${valveMax}h</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" style="width:${valvePct}%; background:${valveColor};"></div></div>
+    </div>`;
+}
+
+let engineBadgeHtml = `<span style="background:${bike.engineType === '4T' ? 'var(--neon-blue)' : 'var(--brand-orange)'}; color:#050b14; padding:2px 8px; border-radius:6px; font-weight:bold; font-size:0.75rem; margin-left:6px;">${bike.engineType}</span>`;
+
+container.innerHTML += `
+<div class="bike-card" style="border-color:${bike.color}; border-left-width: 8px;" onclick="openBikeDossier(${bike.id})">
+<div class="bike-card-header">
+<span class="brand-badge" style="background:${bike.badgeBg}; color:${bike.badgeText};">${bike.brand} ${engineBadgeHtml}</span>
+<button class="btn-danger" onclick="deleteBike(${bike.id}, event)">Supprimer</button>
+</div>
+<h3 style="font-size: 1.3rem;">${bike.model} (${bike.year})</h3>
+<p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:4px;">Total Heures : <strong style="color:var(--cyan-accent);">${bike.totalHours.toFixed(1)} h</strong></p>
+<div class="bike-photo-box">${photoHtml}</div>
+
+<!-- Bloc État des pièces adapté 2T / 4T -->
+<div class="parts-status-box">
+<div class="parts-status-title">État des pièces (${bike.engineType}) :</div>
+
+<div class="part-item">
+<div class="part-header">
+<span>${pistonTitle}</span>
+<span style="color:${pistonColor};">${pistonCurrent}h / ${pistonMax}h</span>
+</div>
+<div class="progress-track"><div class="progress-fill" style="width:${pistonPct}%; background:${pistonColor};"></div></div>
+</div>
+
+<div class="part-item">
+<div class="part-header">
+<span>${oilTitle}</span>
+<span style="color:${oilColor};">${oilCurrent}h / ${oilMax}h</span>
+</div>
+<div class="progress-track"><div class="progress-fill" style="width:${oilPct}%; background:${oilColor};"></div></div>
+</div>
+
+${valvesHtml}
+
+<div class="part-item">
+<div class="part-header">
+<span>Kit Chaîne & Pignon</span>
+<span style="color:var(--success-green);">${bike.parts.chain.status || 'Bon état'}</span>
+</div>
+<div class="progress-track"><div class="progress-fill" style="width:15%; background:var(--success-green);"></div></div>
+</div>
+</div>
+
+<div class="btn-view" style="background:${bike.color}; color:${bike.badgeText};">📂 Voir le dossier complet</div>
+</div>`;
+});
+}
+
+function openBikeDossier(bikeId) {
+let bike = garageBikes.find(b => b.id == bikeId);
+if (!bike) return;
+let logsHtml = bike.logs.length > 0 ? bike.logs.map(l => `<div style="background:var(--card-bg); padding:6px; border-radius:6px; margin-bottom:4px;"><strong style="color:var(--yellow-gold);">${l.type}</strong> (+${l.addedHours}h)<br><small>${l.date}</small></div>`).join('') : '<p style="color:var(--text-muted);">Aucun entretien.</p>';
+let s = bike.suspension || { forkComp: 12, forkReb: 10, shockComp: 12, shockReb: 10, shockSagStatic: 35, shockSagRider: 105, notes: "" };
+
+document.getElementById('dossierBody').innerHTML = `
+<h2 style="text-align:center;">${bike.brand} ${bike.model} (${bike.engineType || '2T'})</h2>
+<p style="color:var(--yellow-gold); margin-bottom:15px; text-align:center;">Heures totales : <strong>${bike.totalHours.toFixed(1)} hrs</strong></p>
+<div style="background:var(--card-inner); padding:10px; border-radius:8px; margin-bottom:10px;">
+<h4 style="color:var(--cyan-accent);">⚙️ Suspensions & SAG</h4>
+<p>• Fourche : Comp <strong>${s.forkComp}</strong> | Reb <strong>${s.forkReb}</strong></p>
+<p>• Amortisseur : Comp <strong>${s.shockComp}</strong> | Reb <strong>${s.shockReb}</strong></p>
+<p>• SAG : Stat <strong>${s.shockSagStatic}mm</strong> | Dyn <strong>${s.shockSagRider}mm</strong></p>
+</div>
+<div style="background:var(--card-inner); padding:10px; border-radius:8px;"><h4 style="color:var(--cyan-accent);">🛠️ Entretiens</h4>${logsHtml}</div>`;
+document.getElementById('dossierModal').style.display = 'block';
+}
+
+function closeDossierModal() { document.getElementById('dossierModal').style.display = 'none'; }
+
+function loadSuspensionSettings() {
+const bikeId = document.getElementById('suspBikeSelect').value;
+let bike = garageBikes.find(b => b.id == bikeId);
+if (bike && bike.suspension) {
+document.getElementById('forkComp').value = bike.suspension.forkComp ?? 12;
+document.getElementById('forkReb').value = bike.suspension.forkReb ?? 10;
+document.getElementById('shockComp').value = bike.suspension.shockComp ?? 12;
+document.getElementById('shockReb').value = bike.suspension.shockReb ?? 10;
+document.getElementById('shockSagStatic').value = bike.suspension.shockSagStatic ?? 35;
+document.getElementById('shockSagRider').value = bike.suspension.shockSagRider ?? 105;
+document.getElementById('suspNotes').value = bike.suspension.notes || '';
+}
+}
+
+function saveSuspensionSettings() {
+const bikeId = document.getElementById('suspBikeSelect').value;
+let bike = garageBikes.find(b => b.id == bikeId);
+if (bike) {
+bike.suspension = {
+forkComp: document.getElementById('forkComp').value,
+forkReb: document.getElementById('forkReb').value,
+shockComp: document.getElementById('shockComp').value,
+shockReb: document.getElementById('shockReb').value,
+shockSagStatic: document.getElementById('shockSagStatic').value,
+shockSagRider: document.getElementById('shockSagRider').value,
+notes: document.getElementById('suspNotes').value
+};
+saveToLocalStorage();
+alert("Réglages suspensions sauvegardés !");
+}
+}
+
+function addMaintenanceRecord() {
+const bikeId = document.getElementById('maintBikeSelect').value;
+const checkedBoxes = document.querySelectorAll('.maint-checkbox:checked');
+const autreCheckbox = document.getElementById('checkbox-autre');
+const customInput = document.getElementById('customMaintInput') ? document.getElementById('customMaintInput').value.trim() : '';
+
+if (checkedBoxes.length === 0) { 
+  alert("Coche au moins une intervention !"); 
+  return; 
+}
+
+if (autreCheckbox && autreCheckbox.checked && !customInput) {
+  alert("Veuillez préciser l'intervention dans le champ 'Autre'.");
+  return;
+}
+
+let typesArray = [];
+checkedBoxes.forEach(cb => {
+  if (cb.value === "Autre") {
+    if (customInput) typesArray.push(customInput);
+  } else {
+    typesArray.push(cb.value);
+  }
+});
+
+let types = typesArray.join(' / ');
+if (!types) {
+  alert("Coche au moins une intervention !");
+  return;
+}
+
+const addedHours = parseFloat(document.getElementById('addHours').value) || 0;
+const notes = document.getElementById('maintNotes').value;
+
+let bike = garageBikes.find(b => b.id == bikeId);
+if (bike) {
+bike.totalHours += addedHours;
+
+if(!bike.engineType) bike.engineType = isFourStroke(bike.brand, bike.model) ? '4T' : '2T';
+if(!bike.parts) {
+    bike.parts = { 
+        piston: { lastChangedAt: 0, maxHours: bike.engineType === '4T' ? 60 : 20 }, 
+        oil: { lastChangedAt: 0, maxHours: bike.engineType === '4T' ? 5 : 10 }, 
+        chain: { status: "Bon état" },
+        valves: bike.engineType === '4T' ? { lastChangedAt: 0, maxHours: 30 } : null
+    };
+}
+
+checkedBoxes.forEach(cb => {
+    if(cb.value.includes("Vidange Huile Moteur") || cb.value.includes("Vidange Boîte") || cb.value.includes("Vidange")) {
+        bike.parts.oil.lastChangedAt = bike.totalHours;
+    }
+    if(cb.value.includes("Changement Piston") || cb.value.includes("Piston")) {
+        bike.parts.piston.lastChangedAt = bike.totalHours;
+    }
+    if(cb.value.includes("Jeu aux Soupapes") && bike.parts.valves) {
+        bike.parts.valves.lastChangedAt = bike.totalHours;
+    }
+    if(cb.value.includes("Kit Chaîne Neuf")) {
+        bike.parts.chain.status = "Kit chaîne récent";
+    }
+});
+
+bike.logs.unshift({ date: new Date().toLocaleDateString('fr-FR'), type: types, addedHours, notes });
+saveToLocalStorage();
+updateBikeSelects();
+loadMaintenanceLogs();
+renderGarageBikes();
+updateHomeDashboard();
+gamificationPoints += 1;
+updateGamificationDisplay();
+
+document.querySelectorAll('.maint-checkbox').forEach(cb => cb.checked = false);
+const customGroup = document.getElementById('customMaintInputGroup');
+if (customGroup) customGroup.style.display = 'none';
+if (document.getElementById('customMaintInput')) document.getElementById('customMaintInput').value = '';
+document.getElementById('addHours').value = '';
+document.getElementById('maintNotes').value = '';
+alert("Entretien enregistré !");
+}
+}
+
+function loadMaintenanceLogs() {
+const bikeId = document.getElementById('maintBikeSelect').value;
+const container = document.getElementById('maintenanceHistory');
+if(!container) return;
+container.innerHTML = '';
+let bike = garageBikes.find(b => b.id == bikeId);
+if (bike && bike.logs && bike.logs.length > 0) {
+bike.logs.forEach(l => {
+container.innerHTML += `<div style="background:var(--card-inner); padding:8px; border-radius:6px; margin-bottom:6px;"><strong>${l.type}</strong> (+${l.addedHours}h)<br><small>${l.date}</small></div>`;
+});
+} else { container.innerHTML = '<p style="color:var(--text-muted);">Aucun historique.</p>'; }
+}
+
+function saveChronoRecord() {
+const circuit = document.getElementById('circuitName').value.trim();
+const time = document.getElementById('lapTime').value.trim();
+const bikeId = document.getElementById('chronoBikeSelect').value;
+const notes = document.getElementById('chronoNotes').value.trim();
+if (!circuit || !time) { alert("Remplis le circuit et le chrono !"); return; }
+let bike = garageBikes.find(b => b.id == bikeId);
+circuitChronos.unshift({ id: Date.now(), circuit, time, bikeName: bike ? `${bike.brand} ${bike.model}` : "Moto", notes, date: new Date().toLocaleDateString('fr-FR') });
+saveToLocalStorage();
+loadChronosHistory();
+gamificationPoints += 1;
+updateGamificationDisplay();
+document.getElementById('circuitName').value = '';
+document.getElementById('lapTime').value = '';
+document.getElementById('chronoNotes').value = '';
+alert("Chrono enregistré !");
+}
+
+function deleteChrono(id) {
+if(confirm("Supprimer ce chrono ?")) {
+circuitChronos = circuitChronos.filter(c => c.id !== id);
+saveToLocalStorage();
+loadChronosHistory();
+}
+}
+
+function loadChronosHistory() {
+const container = document.getElementById('chronosHistoryList');
+if(!container) return;
+container.innerHTML = circuitChronos.length === 0 ? '<p style="color:var(--text-muted);">Aucun chrono.</p>' : '';
+circuitChronos.forEach(c => {
+container.innerHTML += `<div style="background:var(--card-inner); padding:10px; border-radius:8px; margin-bottom:8px;"><div style="display:flex; justify-content:space-between;"><strong style="color:var(--cyan-accent);">📍 ${c.circuit}</strong><button class="btn-danger" style="padding:2px 6px;" onclick="deleteChrono(${c.id})">X</button></div><div style="font-size:1.1font; font-weight:bold;">⏱️ ${c.time} <span style="font-size:0.8rem; color:var(--text-muted);">(${c.bikeName})</span></div>${c.notes ? `<small>${c.notes}</small>` : ''}</div>`;
+});
+}
+
+function switchRpMode(mode) {
+document.getElementById('tab-mode-regions').classList.remove('active');
+document.getElementById('tab-mode-liste').classList.remove('active');
+document.getElementById('rp-view-regions').style.display = 'none';
+document.getElementById('rp-view-liste').style.display = 'none';
+document.getElementById('rp-view-region-detail').style.display = 'none';
+
+if (mode === 'regions') { document.getElementById('tab-mode-regions').classList.add('active'); document.getElementById('rp-view-regions').style.display = 'block'; }
+else { document.getElementById('tab-mode-liste').classList.add('active'); document.getElementById('rp-view-liste').style.display = 'block'; }
+}
+
+const baseRegionsNames = ["Hauts-de-France", "Grand Est", "Normandie", "Bretagne", "Pays de la Loire", "Nouvelle-Aquitaine", "Occitanie", "Belgique - Flandre", "Belgique - Wallonie"];
+
+function renderRegionsGrid() {
+const container = document.getElementById('regionsGridContainer');
+if(!container) return;
+container.innerHTML = '';
+baseRegionsNames.forEach(regName => {
+let match = circuitsData.filter(c => c.region === regName);
+let count = match.length;
+container.innerHTML += `<div class="region-card ${count > 0 ? 'has-tracks' : ''}" onclick="openRegionDetail('${regName}')"><div class="region-title">${regName}</div><div class="region-count">${count} terrain${count > 1 ? 's' : ''}</div></div>`;
+});
+}
+
+function openRegionDetail(regName) {
+document.getElementById('rp-view-regions').style.display = 'none';
+document.getElementById('rp-view-region-detail').style.display = 'block';
+document.getElementById('selectedRegionTitle').innerText = `📍 ${regName}`;
+const container = document.getElementById('regionCircuitsContainer');
+if(!container) return;
+container.innerHTML = '';
+let match = circuitsData.filter(c => c.region === regName);
+if(match.length === 0) { container.innerHTML = '<p style="color:var(--text-muted);">Aucun circuit.</p>'; return; }
+match.forEach(c => {
+let dist = getUserDistance(c.lat, c.lng);
+container.innerHTML += `
+<div class="circuit-card">
+<div class="circuit-header"><h3>${c.name}</h3><span class="circuit-badge">${dist} km</span></div>
+<p style="color:var(--yellow-gold); font-size:0.8rem; display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+<span>📍 ${c.location} | 🛞 ${c.type}</span>
+<span class="status-open">${c.status}</span>
+</p>
+<p style="font-size:0.82rem; margin-top:6px;">${c.description}</p>
+</div>`;
+});
+}
+
+function backToRegions() {
+document.getElementById('rp-view-region-detail').style.display = 'none';
+document.getElementById('rp-view-regions').style.display = 'block';
+}
+
+function renderCircuitsList(list) {
+const container = document.getElementById('circuitsListContainer');
+if(!container) return;
+container.innerHTML = '';
+list.forEach(c => {
+let dist = getUserDistance(c.lat, c.lng);
+container.innerHTML += `
+<div class="circuit-card">
+<div class="circuit-header"><h3>${c.name}</h3><span class="circuit-badge">${dist} km</span></div>
+<p style="color:var(--yellow-gold); font-size:0.8rem; display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+<span>📍 ${c.location} (${c.region}) | 🛞 ${c.type}</span>
+<span class="status-open">${c.status}</span>
+</p>
+</div>`;
+});
+}
+
+function filterCircuitsBySearch() {
+const q = document.getElementById('circuitSearchInput').value.toLowerCase();
+renderCircuitsList(circuitsData.filter(c => c.name.toLowerCase().includes(q) || c.location.toLowerCase().includes(q)));
+}
+
+let stopwatchInterval = null, stopwatchTime = 0, isStopwatchRunning = false;
+function startStopwatch() {
+if (isStopwatchRunning) return;
+isStopwatchRunning = true;
+let start = Date.now() - stopwatchTime;
+stopwatchInterval = setInterval(() => { stopwatchTime = Date.now() - start; updateStopwatchDisplay(); }, 10);
+}
+function stopStopwatch() { isStopwatchRunning = false; clearInterval(stopwatchInterval); }
+function resetStopwatch() { stopwatchTime = 0; updateStopwatchDisplay(); stopStopwatch(); }
+function updateStopwatchDisplay() {
+let min = Math.floor(stopwatchTime / 60000), sec = Math.floor((stopwatchTime % 60000) / 1000), cs = Math.floor((stopwatchTime % 1000) / 10);
+let disp = document.getElementById('stopwatchDisplay');
+if(disp) disp.innerText = `${min < 10 ? '0'+min : min}:${sec < 10 ? '0'+sec : sec}.${cs < 10 ? '0'+cs : cs}`;
+}
+function useCurrentChrono() {
+const timeText = document.getElementById('stopwatchDisplay').innerText;
+const lapInput = document.getElementById('lapTime');
+if(lapInput) lapInput.value = timeText.startsWith("0") ? timeText.substring(1) : timeText;
+alert("Chrono copié !");
+}
+
+function switchTab(tabId, event) {
+document.querySelectorAll('.tab-section').forEach(el => el.classList.remove('active'));
+document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+document.getElementById(tabId).classList.add('active');
+let nav = document.getElementById('nav-' + tabId);
+if(nav) nav.classList.add('active');
+window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
